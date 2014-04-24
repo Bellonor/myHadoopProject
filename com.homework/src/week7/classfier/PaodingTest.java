@@ -20,9 +20,11 @@ public class PaodingTest {
         		CharTermAttribute ta=ts.getAttribute(CharTermAttribute.class);
         		System.out.println(ta.toString());
         	}
+        	
         }catch(Exception e){
         	
         }
+        
 	}
 
 }
