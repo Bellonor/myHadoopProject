@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.homework.hdfs.HdfsDAO;
 
+import myInputFormat.MyInputFormat;
 import net.paoding.analysis.analyzer.PaodingAnalyzer;
 
 import org.apache.hadoop.fs.FileStatus;
@@ -86,7 +87,7 @@ public class PaodingFirst {
         job.setMapperClass(PaodingFirstMapper.class);
        
 
-        job.setInputFormatClass(TextInputFormat.class);
+        job.setInputFormatClass(MyInputFormat.class);
         job.setOutputFormatClass(TextOutputFormat.class);
 
        Path inpath= new Path(input);
