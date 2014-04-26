@@ -7,7 +7,7 @@ import java.util.Map;
 
 import com.homework.hdfs.HdfsDAO;
 
-import myInputFormat.MyInputFormat;
+
 import net.paoding.analysis.analyzer.PaodingAnalyzer;
 
 import org.apache.hadoop.fs.FileStatus;
@@ -71,7 +71,8 @@ public class PaodingFirst {
     	
     public static void run(Map<String, String> path) throws IOException, ClassNotFoundException, InterruptedException {
         JobConf conf = Main.config();
-
+        conf.set("dfs.permissions","false");
+        conf.setLong("mapreduce.input.fileinputformat.split.maxsize", 4000000);    //max size of Split
         String input = path.get("PaodingFirstIn");
         String output = path.get("PaodingFirstOut");
 
@@ -87,7 +88,7 @@ public class PaodingFirst {
         job.setMapperClass(PaodingFirstMapper.class);
        
 
-        job.setInputFormatClass(MyInputFormat.class);
+        job.setInputFormatClass(TextInputFormat.class);
         job.setOutputFormatClass(TextOutputFormat.class);
 
        Path inpath= new Path(input);

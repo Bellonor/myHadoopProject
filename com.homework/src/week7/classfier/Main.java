@@ -45,6 +45,7 @@ public class Main {
 	
     public static JobConf config() {
         JobConf conf = new JobConf(Main.class);
+        
         conf.setJobName("Main");
         //conf.addResource("classpath:/hadoop/core-site.xml");
         //conf.addResource("classpath:/hadoop/hdfs-site.xml");
