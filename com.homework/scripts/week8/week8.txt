@@ -1,0 +1,33 @@
+--1.分词
+hadoop jar /home/hadoop/in/tokenize.jar /user/hdfs/week7/in /user/hdfs/week7/out
+
+--2.划分样本，80%训练集，20%测试集
+processed= load '/user/hdfs/week8/mine/in/processed' as (category:chararray,doc:chararray);
+test = sample processed 0.2;
+tfull= JOIN processed BY (category,doc) LEFT OUTER,test BY (category,doc);
+t8=  filter tfull BY test::category is null;
+train= foreach t8 generate processed::category as category,processed::doc as doc;
+store test into '/user/hdfs/week8/mine/test';
+store train into '/user/hdfs/week8/mine/train';
+  --查看划分结果
+test_count = foreach ( group test by category) generate group,COUNT(test.category);
+DUMP test_count;
+train_count = foreach ( group train by category) generate group,COUNT(train.category);
+DUMP train_count;
+
+--3.训练学习集，及测试
+--mahout-0.6版,0.8不行
+--a.bayes
+mahout trainclassifier -i /user/hdfs/week8/mine/train -o /user/hdfs/week8/mine/model-bayes -type bayes -ng 1 -source hdfs
+mahout testclassifier -d /user/hdfs/week8/mine/test -m /user/hdfs/week8/mine/model-bayes -type bayes -ng 1 -source hdfs -method mapreduce
+--b.cbayes
+mahout trainclassifier -i /user/hdfs/week8/mine/train -o /user/hdfs/week8/mine/model-cbayes -type cbayes -ng 1 -source hdfs
+mahout testclassifier -d /user/hdfs/week8/mine/test -m /user/hdfs/week8/mine/model-cbayes -type cbayes -ng 1 -source hdfs -method mapreduce
+
+--用户数据测试
+--分词
+hadoop jar /home/hadoop/in/tokenize.jar /user/hdfs/week8/mine/user /user/hdfs/week8/mine/user-out
+--运行：
+hdfs://192.168.0.100:9000/user/hdfs/week8/mine/user-out hdfs://192.168.0.100:9000/user/hdfs/week8/mine/user-output hdfs://192.168.0.100:9000/user/hdfs/week8/mine/model-cbayes cbayes
+
+
