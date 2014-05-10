@@ -24,7 +24,7 @@ mahout testclassifier -d /user/hdfs/week8/homework/test -m /user/hdfs/week8/home
 mahout trainclassifier -i /user/hdfs/week8/homework/train -o /user/hdfs/week8/homework/model-cbayes -type cbayes -ng 1 -source hdfs
 mahout testclassifier -d /user/hdfs/week8/homework/test -m /user/hdfs/week8/homework/model-cbayes -type cbayes -ng 1 -source hdfs -method mapreduce
 
---用户数据测试
+--实战
 --分词
 hadoop jar /home/hadoop/in/tokenize.jar /user/hdfs/week8/homework/user-sport /user/hdfs/week8/homework/user-sport-out
 --运行：win7,eclipse下运行
