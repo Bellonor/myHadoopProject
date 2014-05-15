@@ -20,7 +20,7 @@ import org.apache.hadoop.mapred.JobConf;
 
 //第三步：过滤: 推荐结果 > 用户浏览过职位平均薪水%80 .
 public class Main {
-    public static final String HDFS = "hdfs://192.168.0.200:9000/user/hdfs/week7/";
+    public static final String HDFS = "hdfs://10.3.7.201:9000/user/hdfs/week7/";
     public static final Pattern DELIMITER = Pattern.compile("[\t,]");
     
     public static final String PaodingFirstIn = HDFS+"in/";

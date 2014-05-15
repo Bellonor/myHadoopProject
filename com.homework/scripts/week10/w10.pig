@@ -2,9 +2,9 @@
 -- Code by James 
 
 -- Load Data
-data1 = LOAD '/user/hdfs/week10/karate2.csv' AS ( source, target );
+data1 = LOAD '/user/hdfs/week10/noway' AS ( source, target );
 
-data2 = LOAD '/user/hdfs/week10/karate2.csv' AS ( source, target );
+data2 = LOAD '/user/hdfs/week10/noway' AS ( source, target );
 
 -- Mine the common friends
 common_jnd = JOIN data1 BY target, data2 BY target;
@@ -23,4 +23,4 @@ user = FOREACH ( GROUP common BY user )
     GENERATE FLATTEN(candidate_lim) AS ( user, candidate, cnt );
 }
 
-STORE user INTO '/user/hdfs/week10/karate2';
+STORE user INTO '/user/hdfs/week10/noway_out/';
