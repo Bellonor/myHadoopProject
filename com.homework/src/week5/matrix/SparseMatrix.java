@@ -3,7 +3,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import com.homework.hdfs.HdfsDAO;
+
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
@@ -19,7 +19,8 @@ import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
-/*SparseMatrix乘法*/
+
+import com.homework.hdfs.HdfsDAO;
 public class SparseMatrix {
 
     public static class SparseMatrixMapper extends Mapper<LongWritable, Text, Text, Text> {
@@ -72,7 +73,9 @@ public class SparseMatrix {
             }
 
         }
-	}
+	
+ 
+    }
     public static class SparseMatrixReducer extends Reducer<Text, Text, Text, Text> {
     	@Override
         public void reduce(Text key,Iterable<Text> values,  Context context) throws IOException, InterruptedException {
