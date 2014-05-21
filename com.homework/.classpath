@@ -20,6 +20,7 @@
 	<classpathentry kind="src" path="src/common"/>
 	<classpathentry kind="src" path="src/week7"/>
 	<classpathentry kind="src" path="src/week8"/>
+	<classpathentry kind="src" path="src/datamining/apriori"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
