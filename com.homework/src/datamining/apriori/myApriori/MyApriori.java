@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-/*本例为《数据挖掘:概念与技术(第1版)》 韩家炜,第六章apriori伪代码实现*/
+/*本例为《数据挖掘:概念与技术(第1版)》 韩家炜,第六章apriori伪代码实现 */
 public class MyApriori {
 
 	public static final int  support = 5; // 设定最小支持频次为2 
