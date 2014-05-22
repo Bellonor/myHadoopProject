@@ -3,7 +3,7 @@ package myApriori;
 public class ItemMap {
 
 	public String key;
-	public Integer value;
+	public Integer value=0;
 	public String getKey() {
 		return key;
 	}
