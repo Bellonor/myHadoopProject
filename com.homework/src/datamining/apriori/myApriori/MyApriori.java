@@ -138,7 +138,7 @@ public class MyApriori {
 		//计数然后删除不合格的项
 		return DeleteItem2(countItems(list));
 	}
-    public static void generateRequentItems(){
+    public static List<List<ItemMap>> generateRequentItems(){
     	//li从第0项开始，与书中从第一项开始稍有不同
     	List<List<ItemMap>> li=new ArrayList<List<ItemMap>>();
     	List<ItemMap> listmap=findFrequentOneItemSets(dataMap);
@@ -183,6 +183,16 @@ public class MyApriori {
     	   li.add(DeleteItem2(countItems(subli)));
     		
     	}
+    	return li;
+    }
+    public static void generate(){
+    	List<List<ItemMap>> li=generateRequentItems();
+    	List<ItemMap> lmp=li.get(li.size()-1);
+    	for(int i=0;i<lmp.size();i++){
+    		ItemMap item=lmp.get(i);
+    	}
+    	
+    	
     }
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
