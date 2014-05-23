@@ -27,6 +27,7 @@ public class MyApriori {
        map.put("T700", "I1,I3");
        map.put("T800", "I1,I2,I3,I5");
        map.put("T900", "I1,I2,I3");
+       //map.put("T900", "I1,I2,I3,I6,I7");
        return map;
   }
 	/**
@@ -41,6 +42,7 @@ public class MyApriori {
 			String str=entry.getValue();
 			if(str.length()<1)continue;
 			String[] items=str.split(",");
+			//找出购物栏最大的项,为循环连接做准备
 			if(items.length>itemnum)itemnum=items.length;
 			for(int i=0;i<items.length;i++){
 				if(treemap.containsKey(items[i])){
@@ -99,7 +101,7 @@ public class MyApriori {
 			//取出原始数据进行比较，如果购物栏中包含了该子集就+1
 			Iterator<Entry<String,String>> iter=dataMap.entrySet().iterator();
 			Entry<String,String> entry;
-			
+			//取出购物栏中数据，逐行扫描
 			while(iter.hasNext()){
 				entry=iter.next();
 				boolean iscontain=true;
@@ -136,11 +138,57 @@ public class MyApriori {
 		//计数然后删除不合格的项
 		return DeleteItem2(countItems(list));
 	}
-
+    public static void generateRequentItems(){
+    	//li从第0项开始，与书中从第一项开始稍有不同
+    	List<List<ItemMap>> li=new ArrayList<List<ItemMap>>();
+    	List<ItemMap> listmap=findFrequentOneItemSets(dataMap);
+    	if(listmap.size()>0)li.add(listmap);
+    	//如:购物栏中最大有四项，只需要对4-1进行连接，留下一个做规则分析
+    	for(int i=1;i<itemnum-1;i++){
+    		if(i==1){
+    			List<ItemMap> listmap2=findFrequentTwoItemSets(li.get(i-1));
+    			if(listmap2.size()>0)li.add(listmap2);
+    			continue;
+    		}
+    		//对C3的连接是在L2的基础上进行的，所以要-1
+    		List<ItemMap> listmp=li.get(i-1);
+    		Integer rows=listmp.size();
+    		List<ItemMap> subli=new ArrayList<ItemMap>();
+    		for(int j=0;j<rows-1;j++){
+    			ItemMap itm=listmp.get(j);
+    			String[] items=itm.getKey().split(",");
+    			//i-2项相同就连接，否则跳过
+    			for(int n=j+1;n<rows;n++){
+        			ItemMap itemNext=listmp.get(n);
+        			String[] next=itemNext.getKey().split(",");
+        			int maxnum=next.length;
+        			//对比前I-2项是否相同，相同就连接，如产生C3连接，那么就要对比第一项是相同，拿C2来对比
+        			boolean isEqual=true; 
+        			for(int k=0;k<=i-2;k++){
+        				//在I-2项中只要有一项不相同就等于否，说明不能连接
+        				if(!items[k].toString().equals(next[k].toString())){
+        					isEqual=false;
+        				}
+        			}
+        			if(isEqual){
+        				ItemMap itmp=new ItemMap();
+        				String key=itm.getKey()+","+next[maxnum-1];
+        				itmp.setKey(key);
+        				itmp.setValue(0);
+        				subli.add(itmp);
+        			}
+    			}
+    		}
+    	 //计数，删除后加入li中
+    	   li.add(DeleteItem2(countItems(subli)));
+    		
+    	}
+    }
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		List<ItemMap> listmap=findFrequentOneItemSets(dataMap);
-		List<ItemMap> listmap2=findFrequentTwoItemSets(listmap);
+		generateRequentItems();
+		
+
 		ItemMap itm=new ItemMap();
 		String dd="Dd";
 	}
