@@ -1,5 +1,6 @@
 package myApriori;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -186,18 +187,108 @@ public class MyApriori {
     	return li;
     }
     public static void generate(){
+    	List<List<ItemMap>> lirule=new ArrayList<List<ItemMap>>();
+    	
     	List<List<ItemMap>> li=generateRequentItems();
     	List<ItemMap> lmp=li.get(li.size()-1);
     	for(int i=0;i<lmp.size();i++){
+    		List<ItemMap> sublist=new ArrayList<ItemMap>();
     		ItemMap item=lmp.get(i);
+    		String[] strkey=item.getKey().split(",");
+    		sublist=subset(strkey,li);
+    		String key=item.getKey();
+    		Integer value=item.getValue();
+    		System.out.println("频繁项集产生的推荐规则如下："+key);
+    		for(int j=0;j<sublist.size();j++){
+    			ItemMap itm=sublist.get(j);
+    			String itmKey=itm.getKey();
+    			Integer itmValue=itm.getValue();
+    			for(int k=0;k<sublist.size();k++){
+    				ItemMap nextitem=sublist.get(k);
+        			String nextKey=nextitem.getKey();
+        			//互不包含就产生规则
+        			String[] nextkeys=nextKey.split(",");
+        			boolean iscontain=false;
+        			
+        			for(int n=0;n<nextkeys.length;n++){
+        				boolean b1=itmKey.contains(nextkeys[n]);
+        				boolean b2=nextkeys[n].contains(itmKey);
+            			if(b1||b2){
+            				iscontain=true;
+            			}
+            			//过滤掉单项=>单项,如:I1=>I2
+            			if(itmKey.split(",").length==1&&nextkeys.length==1){
+            				iscontain=true;
+            			}
+        			}
+        			if(!iscontain){
+        				DecimalFormat df = new DecimalFormat("#.##");
+        				Double confidence=0.0;
+        				confidence=(Double.valueOf(value)/Double.valueOf(itmValue));
+        				
+        				System.out.println(itmKey+"=>"+nextKey+",	"+"confidence="+value+"/"+itmValue+"="+df.format(confidence*100)+"%");
+        			}
+    			}
+    		}
+    		System.out.println();
+    		lirule.add(sublist);
     	}
     	
     	
     }
+    // 求子集,并求子集出现的次数
+	public static List<ItemMap>  subset(String[] str,List<List<ItemMap>> list){
+		
+		StringBuilder sb=new StringBuilder();
+		List<ItemMap> li=new ArrayList<ItemMap>();
+		for(int i=0;i<str.length;i++){
+			int size=li.size();
+			//取出一下个的时候与前面的所有项逐个搭配
+			for(int j=0;j<size;j++){
+				ItemMap item1=new ItemMap();
+				item1.setKey(li.get(j).getKey()+","+str[i]);
+				Integer value=itemsTimes(item1.getKey(),list);
+				item1.setValue(value);
+				li.add(item1);
+			}  
+			ItemMap item2=new ItemMap();
+			item2.setKey(str[i]);
+			Integer value=itemsTimes(str[i],list);
+			item2.setValue(value);
+			
+			li.add(item2);
+			sb.append(str[i]+",");
+			
+		}
+		//删除本身
+		int len=sb.toString().length();
+		String del=sb.toString().substring(0,len-1);
+		for(int i=0;i<li.size();i++){
+			if(del.equals(li.get(i).getKey())){
+				li.remove(i);
+				break;
+			}
+		}
+		String dd="dd";
+		return li;
+	}
+	public static Integer itemsTimes(String key,List<List<ItemMap>> list){
+		Integer value=0;
+		int index=key.split(",").length-1;
+		if(index==-1)return null;
+		List<ItemMap> lis=list.get(index);
+		for(int i=0;i<lis.size();i++){
+			if(key.equals(lis.get(i).getKey())){
+				value= lis.get(i).getValue();
+			}
+		}
+		return value;
+		
+	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		generateRequentItems();
-		
+		//generateRequentItems();
+		generate();
 
 		ItemMap itm=new ItemMap();
 		String dd="Dd";
