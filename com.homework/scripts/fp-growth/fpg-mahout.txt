@@ -1,0 +1,6 @@
+mahout fpg -i /user/hdfs/fp-growth/in/fpg.txt -o /user/hdfs/fp-growth/out -k 50 -method mapreduce -regex '[\ ]' -s 2
+
+
+´òÓ¡½á¹û£º
+
+mahout seqdumper -i /user/hdfs/fp-growth/out/frequentpatterns/part-r-00000
