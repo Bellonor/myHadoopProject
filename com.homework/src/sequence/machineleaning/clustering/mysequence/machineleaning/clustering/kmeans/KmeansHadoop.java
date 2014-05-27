@@ -1,4 +1,4 @@
-package myhadoop.machinelearning.clustering.kmeans;
+package mysequence.machineleaning.clustering.kmeans;
 
 import java.util.Iterator;
 

@@ -5,4 +5,4 @@
  * @author Administrator
  *
  */
-package myhadoop.machinelearning.clustering.canopy;
+package mysequence.machineleaning.clustering.kmeans;
