@@ -1,4 +1,4 @@
-package myhadoop.datamining.cluster;
+package myhadoop.meaningleaning.clustering.kmeans;
 
 import java.util.Iterator;
 

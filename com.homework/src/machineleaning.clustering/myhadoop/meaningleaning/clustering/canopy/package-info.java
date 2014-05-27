@@ -5,4 +5,4 @@
  * @author Administrator
  *
  */
-package myhadoop.datamining.cluster;
+package myhadoop.meaningleaning.clustering.canopy;
