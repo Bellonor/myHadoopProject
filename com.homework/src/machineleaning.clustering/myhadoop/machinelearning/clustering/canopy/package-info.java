@@ -5,4 +5,4 @@
  * @author Administrator
  *
  */
-package myhadoop.meaningleaning.clustering.canopy;
+package myhadoop.machinelearning.clustering.canopy;
