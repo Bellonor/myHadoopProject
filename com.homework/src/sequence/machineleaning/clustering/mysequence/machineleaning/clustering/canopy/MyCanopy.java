@@ -36,7 +36,7 @@ public class MyCanopy {
     }
 	//简单地采用曼哈顿距离|x1 – x2| + |y1 – y2|
 	public static  Double DistanceMeasure(Point p1,Point p2){
-		return Math.abs(p2.getX()-p1.getX()) +Math.abs(p2.getY()-p2.getY());
+		return Math.abs(p2.getX()-p1.getX()) +Math.abs(p2.getY()-p1.getY());
 	}
 	public static void clustering(){
           
@@ -46,7 +46,8 @@ public class MyCanopy {
 		   Vector<Point>  v1=new Vector<Point>();
 		   v1.add(p0);
 		   list.add(v1);
-		   li.remove(0);  
+		   li.remove(0); 
+		   System.out.println("中心点为:"+p0.getX()+","+p0.getY());
 		while(0<li.size()){
 			Point p1=li.get(0);
 			//如果属于已有的聚类，记为true,否则false
@@ -60,20 +61,37 @@ public class MyCanopy {
 					inside=true;
 					list.get(i).add(p1);
 					li.remove(0);
+					System.out.println("C"+i+":"+p1.getX()+","+p1.getY()+"dist<t2");
 					
 				}
 				//如果t2<=dist<t1，属于当前的聚类,但还不确定他是否比其它的聚类更加接近，所以不删除，等待下一轮的观察。
                 if(t2<=dist&&dist<t1){
-					list.get(i).add(p1);
+                	//参加本类聚类过的点不再参与聚类
+                	if(p1.getSign()==i){
+						continue;
+					}
+                	list.get(i).add(p1);
 					inside=true;
+					li.remove(0);
+					li.add(p1);
+					
+					//是否曾经参与过本次聚类，记上聚类的索引号，下次再来的时候不伺候
+					p1.setSign(i);
+					
+					System.out.println("C"+i+":"+p1.getX()+","+p1.getY()+"t2<=dist<t1");
 				}
              }
 			//如果不属于现有的任何一个聚类，则新建一个聚类,然后删除该点
 			if(!inside){
-				   Vector<Point>  v=new Vector<Point>();
-				   v1.add(p1);
-				   list.add(v1);
-				   li.remove(0);	
+				   Vector<Point>  vec=new Vector<Point>();
+				   vec.add(p1);
+				   li.remove(0);
+				   list.add(vec);
+				   	
+			}
+			//与各个已经形成的聚类比较距离，比较结束后将其删除，以结束循环
+			if(li.get(0).getSign()!=-1){
+				li.remove(0);
 			}
          }
 		String ss="ddd";

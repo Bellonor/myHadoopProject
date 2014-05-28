@@ -4,6 +4,7 @@ public class Point {
 
 	private Double x;
 	private Double y;
+	private Integer sign=-1;
 	public Double getX() {
 		return x;
 	}
@@ -15,6 +16,12 @@ public class Point {
 	}
 	public void setY(Double y) {
 		this.y = y;
+	}
+	public Integer getSign() {
+		return sign;
+	}
+	public void setSign(Integer sign) {
+		this.sign = sign;
 	}
 	
 }
