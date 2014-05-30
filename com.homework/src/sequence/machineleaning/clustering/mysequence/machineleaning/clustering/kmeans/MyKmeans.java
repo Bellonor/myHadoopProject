@@ -14,11 +14,11 @@ public class MyKmeans {
 
 	static Vector<Point>  li=new Vector<Point>();
 	//static List<Point>  li=new ArrayList<Point>();
-	static List<Vector<Point>> list=new ArrayList<Vector<Point>>();
-	private final static Integer K=2;
-	private final static Double converge=0.001;
+	static List<Vector<Point>> list=new ArrayList<Vector<Point>>(); //每次迭代保存结果，一个vector代表一个簇
+	private final static Integer K=2; //选K=2，也就是估算有两个簇。
+	private final static Double converge=0.001; //当距离小于某个值的时候，就认为聚类已经聚类了，不需要再迭代，这里的值选0.001	
 	
-	
+	//读取数据
 	public static final void readF1() throws IOException {      
 		String filePath="datafile/cluster/simple_k-means.txt";
 		BufferedReader br = new BufferedReader(new InputStreamReader(
@@ -75,7 +75,7 @@ public class MyKmeans {
 	//下一次移动的簇心
 	
 	private static Double move=Double.MAX_VALUE;//移动距离
-	
+	//不断地迭代，直到收敛
 	public static void RecursionKluster(){
 		for(int times=2;move>converge;times++){
 			System.out.println("第"+times+"次迭代");
@@ -141,9 +141,13 @@ public class MyKmeans {
 	
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
+		//读取数据
 		readF1();
+		//第一次迭代
 		Kluster();
+		//第一次迭代后计算簇心
 		CalCentroid();
+		//不断迭代，直到收敛
 		RecursionKluster();
 	}
 
