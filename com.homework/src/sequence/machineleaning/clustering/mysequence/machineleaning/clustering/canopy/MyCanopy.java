@@ -20,7 +20,9 @@ public class MyCanopy {
 	//简单地采用曼哈顿距离|x1 – x2| + |y1 – y2|
 	
 	public static final void readF1() throws IOException {      
-		String filePath="scripts/clustering/canopy/canopy.dat";
+		
+		//String filePath="scripts/clustering/canopy/canopy.dat";
+		String filePath="datafile/cluster/simple_k-means.txt";
 		BufferedReader br = new BufferedReader(new InputStreamReader(
         new FileInputStream(filePath)));
         for (String line = br.readLine(); line != null; line = br.readLine()) {
