@@ -1,5 +1,9 @@
-package myApriori;
+package mysequence.machineleaning.association.apriori;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,28 +13,45 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+
+import mysequence.machineleaning.clustering.canopy.Point;
 /*本例为《数据挖掘:概念与技术(第1版)》 韩家炜,第六章apriori伪代码实现 */
 public class MyApriori {
 
 	public static final int  support = 2; // 设定最小支持频次为2 
 	public static  int  itemnum = 0; // 设定购物篮中最大项数
-	public static Map<String,String> dataMap=init();
 	
-	public static Map<String,String> init(){
+	public static Map<String,String> dataMap=new HashMap<String,String>();
+	public static void datatest(){
 		 // 初始化事务集  
-       Map<String,String> map=new HashMap<String,String>();
-       map.put("T100","I1,I2,I5");
-       map.put("T200", "I2,I4");
-       map.put("T300", "I2,I3");
-       map.put("T400","I1,I2,I4" );
-       map.put("T500","I1,I3" );
-       map.put("T600", "I2,I3");
-       map.put("T700", "I1,I3");
-       map.put("T800", "I1,I2,I3,I5");
-       map.put("T900", "I1,I2,I3");
+      
+		dataMap.put("T100","I1,I2,I5");
+		dataMap.put("T200", "I2,I4");
+		dataMap.put("T300", "I2,I3");
+		dataMap.put("T400","I1,I2,I4" );
+		dataMap.put("T500","I1,I3" );
+		dataMap.put("T600", "I2,I3");
+		dataMap.put("T700", "I1,I3");
+		dataMap.put("T800", "I1,I2,I3,I5");
+		dataMap.put("T900", "I1,I2,I3");
        //map.put("T900", "I1,I2,I3,I6,I7");
-       return map;
+      
   }
+	public static final void readF1() throws IOException {      
+		
+		//String filePath="scripts/clustering/canopy/canopy.dat";
+		String filePath="datafile/association/items.dat";
+		BufferedReader br = new BufferedReader(new InputStreamReader(
+        new FileInputStream(filePath)));
+        for (String line = br.readLine(); line != null; line = br.readLine()) {
+            if(line.length()==0||"".equals(line))continue;
+        	String[] str=line.split("\t");               
+        	dataMap.put(str[0], str[1]);
+            //System.out.println(line);               
+        }
+        br.close();
+        
+    }
 	/**
 	 * 扫描事务集以确定频繁1项集(找出C1)
 	 */
@@ -285,9 +306,11 @@ public class MyApriori {
 		return value;
 		
 	}
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		//generateRequentItems();
+		//datatest();
+		readF1();
 		generate();
 
 		ItemMap itm=new ItemMap();
@@ -295,3 +318,19 @@ public class MyApriori {
 	}
 
 }
+//运行结果
+/*频繁项集产生的推荐规则如下：I1,I2,I3
+I1=>I2,I3,	confidence=2/6=33.33%
+I1,I2=>I3,	confidence=2/4=50%
+I2=>I1,I3,	confidence=2/7=28.57%
+I1,I3=>I2,	confidence=2/4=50%
+I2,I3=>I1,	confidence=2/4=50%
+I3=>I1,I2,	confidence=2/5=40%
+
+频繁项集产生的推荐规则如下：I1,I2,I5
+I1=>I2,I5,	confidence=2/6=33.33%
+I1,I2=>I5,	confidence=2/4=50%
+I2=>I1,I5,	confidence=2/7=28.57%
+I1,I5=>I2,	confidence=2/2=100%
+I2,I5=>I1,	confidence=2/2=100%
+I5=>I1,I2,	confidence=2/2=100%*/

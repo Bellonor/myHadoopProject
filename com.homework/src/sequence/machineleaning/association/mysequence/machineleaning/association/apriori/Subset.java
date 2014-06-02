@@ -1,4 +1,4 @@
-package myApriori;
+package mysequence.machineleaning.association.apriori;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +12,7 @@ import java.util.List;
  * 14,124,24,1234,234,134,34//第四次FOR,i=3
  * 最后删除本身，为了Apriori算法而增加这一步
  */ 
+//本类为测试使用，不在MyApriori里面
 public class Subset {
 
 	public static List<String> lis=new ArrayList<String>();

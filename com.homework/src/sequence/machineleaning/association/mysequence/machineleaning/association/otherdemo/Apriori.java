@@ -1,4 +1,4 @@
-package other;
+package mysequence.machineleaning.association.otherdemo;
 
 import java.util.HashMap;
 import java.util.HashSet;

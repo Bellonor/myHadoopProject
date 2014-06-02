@@ -1,4 +1,4 @@
-package myApriori;
+package mysequence.machineleaning.association.apriori;
 
 public class ItemMap {
 

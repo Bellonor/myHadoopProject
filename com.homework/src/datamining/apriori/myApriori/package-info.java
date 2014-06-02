@@ -1,8 +1,0 @@
-/**
- * 
- */
-/**
- * @author Jamas
- *
- */
-package myApriori;

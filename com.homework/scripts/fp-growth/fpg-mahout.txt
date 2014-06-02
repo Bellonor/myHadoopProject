@@ -4,3 +4,26 @@ mahout fpg -i /user/hdfs/fp-growth/in/fpg.txt -o /user/hdfs/fp-growth/out -k 50 
 查看结果
 
 mahout seqdumper -i /user/hdfs/fp-growth/out/frequentpatterns/part-r-00000
+结果：
+Key: I1: Value: ([I1],6), ([I2, I1],4), ([I1, I3],4), ([I2, I1, I5],2), ([I2, I1, I3],2)
+Key: I2: Value: ([I2],7), ([I2, I3],4), ([I2, I1],4), ([I2, I1, I5],2), ([I2, I1, I3],2), ([I2, I4],2)
+Key: I3: Value: ([I3],6), ([I2, I3],4), ([I1, I3],4), ([I2, I1, I3],2)
+Key: I4: Value: ([I2, I4],2)
+Key: I5: Value: ([I2, I1, I5],2)
+Count: 5
+查看fpgrowth
+mahout seqdumper -i /user/hdfs/fp-growth/out/fpgrowth/part-r-00000
+Key: I2: Value: ([I2],7)
+Key: I1: Value: ([I1],6), ([I2, I1],4)
+Key: I3: Value: ([I3],6), ([I2, I3],4), ([I1, I3],4), ([I2, I1, I3],2)
+Key: I4: Value: ([I2, I4],2)
+Key: I5: Value: ([I2, I1, I5],2)
+Count: 5
+查看fList
+mahout seqdumper -i /user/hdfs/fp-growth/out/fList
+Key: I2: Value: 7
+Key: I1: Value: 6
+Key: I3: Value: 6
+Key: I4: Value: 2
+Key: I5: Value: 2
+Count: 5

@@ -1,4 +1,4 @@
-package other;
+package mysequence.machineleaning.association.otherdemo;
 /**
  *
  * @author Nathan Magnus, under the supervision of Howard Hamilton
