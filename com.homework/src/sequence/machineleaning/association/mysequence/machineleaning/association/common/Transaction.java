@@ -3,6 +3,7 @@ package mysequence.machineleaning.association.common;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -45,20 +46,22 @@ public class Transaction {
 	
 	//放到Map中排序
 	public static void toMap() throws IOException{
-	   ReadData.readF1(); 
+	   //ReadData.readF1(); 
 	   List<ItemMap> lif1=Transaction.findFrequentOneItemSets(ReadData.dataMap);
 	   for(int i=0;i<lif1.size();i++){
 		   ItemMap item=lif1.get(i);
 		   tmap.put(item.getKey(), item.getValue());
 	   }
 	}
-	public static  String[] itemsort(String[] items){
-		
+	public static  LinkedList<String> itemsort(String[] items){
+		LinkedList<String> linst=new LinkedList<String>();
 		//选择法排序
 		int len=items.length;
 		for(int i=0;i<len;i++){
 			
 			for(int j=i+1;j<len;j++){
+				if(!tmap.containsKey(items[i]))continue;
+				if(!tmap.containsKey(items[j]))continue;
 				int num=tmap.get(items[i]);
 				int nextnum=tmap.get(items[j]);
 				if(num<nextnum){
@@ -67,8 +70,9 @@ public class Transaction {
 					items[j]=tmp;
 				}
 			}
+			linst.add(items[i]);
 		}
-		return items;
+		return linst;
 	}
 	/**
 	 * 剪枝:产生候选项，删除最小事务支持的选项

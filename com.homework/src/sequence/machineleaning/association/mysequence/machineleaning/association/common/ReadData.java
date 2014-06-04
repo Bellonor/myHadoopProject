@@ -6,11 +6,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class ReadData {
 
 	
-	public static Map<String,String> dataMap=new HashMap<String,String>();
+	public static TreeMap<String,String> dataMap=new TreeMap<String,String>();
 	public static final void readF1() throws IOException {      
 		
 		//String filePath="scripts/clustering/canopy/canopy.dat";

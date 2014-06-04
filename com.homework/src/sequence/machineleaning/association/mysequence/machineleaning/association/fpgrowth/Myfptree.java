@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -23,7 +24,7 @@ public class Myfptree {
 	//public static Map<String,String> dataMap=ReadDat.dataMap;
 	//获得F1
 	public static void  getF1() throws IOException{
-		ReadData.readF1(); 
+		
 		lif1=Transaction.findFrequentOneItemSets(ReadData.dataMap);
 		Transaction.toMap();
 		
@@ -37,25 +38,48 @@ public class Myfptree {
 		while(iter.hasNext()){
 			entry=iter.next();
 			String[] items=entry.getValue().trim().split(",");
-			items=Transaction.itemsort(items);
-			for(int i=0;i<items.length;i++){
-				TreeNode child=new TreeNode();
-				child.setName(items[i]);
-				child.setCount(1);
+			LinkedList<String> linst=Transaction.itemsort(items);
+			if(root.getChildren()==null)addNode(root,linst);
+			if(root.getChildren()!=null){
+				addNode2(root,linst);
 			}
+			String ss="dd";
 		}
-		
-		
 	}
-	public static void addNode(){
+	//当已经有分枝存在的时候，判断新来的节点是否属于该分枝的某个节点，或全部重合，递归
+	public static TreeNode addNode2(TreeNode root,LinkedList<String> linst){
+		if(linst.size()<=0)return null;
+		String item=linst.poll();
+		//当前节点的孩子节点不包含该节点，那么另外创建一支分支。
+		if(root.findChild(item)==null){
+			
+		}
+		return root;
+	}
+	//为空树添加第一个分枝,新建分支
+	public static TreeNode addNode(TreeNode root,LinkedList<String> linst){
 		
+		if(linst.size()<=0)return null;
+		String item=linst.poll();
+		TreeNode node=new TreeNode();
+		node.setName(item);
+		node.setCount(1);
+		node.setParent(root);
+		root.addChild(node);
+		
+		addNode(node,linst);
+		return root;
 	}
 	
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
+		//读取数据
+		ReadData.readF1(); 
+		//获取F1
 		getF1();
 		String str[]=new String[]{"I1","I2","I5"};
-		String str2[]=Transaction.itemsort(str);
+		//构建树
+		buildFPTree();
 	}
 
 }
