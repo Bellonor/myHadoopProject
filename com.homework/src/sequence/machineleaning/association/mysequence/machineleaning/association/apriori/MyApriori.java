@@ -40,7 +40,7 @@ public class MyApriori {
 	public static final void readF1() throws IOException {      
 		
 		//String filePath="scripts/clustering/canopy/canopy.dat";
-		String filePath="datafile/association/items.dat";
+		String filePath="datafile/association/items";
 		BufferedReader br = new BufferedReader(new InputStreamReader(
         new FileInputStream(filePath)));
         for (String line = br.readLine(); line != null; line = br.readLine()) {
@@ -201,7 +201,7 @@ public class MyApriori {
         			}
     			}
     		}
-    	 //计数，删除后加入li中
+    	   //计数，删除后加入li中
     	   li.add(DeleteItem2(countItems(subli)));
     		
     	}

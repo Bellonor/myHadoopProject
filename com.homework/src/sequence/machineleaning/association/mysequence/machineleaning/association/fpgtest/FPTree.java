@@ -218,9 +218,10 @@ public class FPTree {
  
     public static void main(String[] args) {
         FPTree fptree = new FPTree();
-        fptree.setMinSuport(3);
+        //fptree.setMinSuport(3);
+        fptree.setMinSuport(2);
         List<List<String>> transRecords = fptree
-                .readTransRocords("datafile/association/fpg");
+                .readTransRocords("datafile/association/fpg2");
         fptree.FPGrowth(transRecords, null);
     }
 }
