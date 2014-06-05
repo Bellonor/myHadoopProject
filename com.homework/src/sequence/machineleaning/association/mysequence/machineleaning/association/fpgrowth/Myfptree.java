@@ -19,7 +19,7 @@ public class Myfptree {
 
 	public static final int  support = 2; // 设定最小支持频次为2 
 	public static  int  itemnum = 0; // 设定购物篮中最大项数
-	
+	public static TreeNode root=new TreeNode();
 	public static List<ItemMap> lif1=null;
 	//public static Map<String,String> dataMap=ReadDat.dataMap;
 	//获得F1
@@ -31,7 +31,7 @@ public class Myfptree {
 	}
     //构建FP-tree
 	public static void buildFPTree(){
-	    TreeNode root=new TreeNode();
+	   
 		Map<String,String> map= ReadData.dataMap;
 		Iterator<Entry<String,String>> iter=map.entrySet().iterator();
 		Entry<String,String> entry;
@@ -39,37 +39,29 @@ public class Myfptree {
 			entry=iter.next();
 			String[] items=entry.getValue().trim().split(",");
 			LinkedList<String> linst=Transaction.itemsort(items);
-			if(root.getChildren()==null)addNode(root,linst);
-			if(root.getChildren()!=null){
-				addNode2(root,linst);
-			}
-			String ss="dd";
+			addNode(root,linst);
+            String ss="dd";
 		}
 	}
 	//当已经有分枝存在的时候，判断新来的节点是否属于该分枝的某个节点，或全部重合，递归
-	public static TreeNode addNode2(TreeNode root,LinkedList<String> linst){
+	public static TreeNode addNode(TreeNode root,LinkedList<String> linst){
 		if(linst.size()<=0)return null;
 		String item=linst.poll();
 		//当前节点的孩子节点不包含该节点，那么另外创建一支分支。
-		if(root.findChild(item)==null){
-			
+		TreeNode node=root.findChild(item);
+		if(node==null){
+			node=new TreeNode();
+			node.setName(item);
+			node.setCount(1);
+			node.setParent(root);
+			root.addChild(node);
+		}else{
+			node.setCount(node.getCount()+1);
 		}
-		return root;
-	}
-	//为空树添加第一个分枝,新建分支
-	public static TreeNode addNode(TreeNode root,LinkedList<String> linst){
-		
-		if(linst.size()<=0)return null;
-		String item=linst.poll();
-		TreeNode node=new TreeNode();
-		node.setName(item);
-		node.setCount(1);
-		node.setParent(root);
-		root.addChild(node);
-		
 		addNode(node,linst);
 		return root;
 	}
+	
 	
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
