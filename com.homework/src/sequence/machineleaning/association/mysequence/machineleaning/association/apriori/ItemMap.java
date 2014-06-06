@@ -1,5 +1,6 @@
 package mysequence.machineleaning.association.apriori;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class ItemMap {
@@ -22,6 +23,9 @@ public class ItemMap {
 		this.value = value;
 	}
 	public Map<String, Integer> getMap() {
+		if(map==null){
+			map=new HashMap<String,Integer>();
+		}
 		return map;
 	}
 	public void setMap(Map<String, Integer> map) {

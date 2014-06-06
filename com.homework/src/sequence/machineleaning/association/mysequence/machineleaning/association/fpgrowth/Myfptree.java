@@ -35,22 +35,35 @@ public class Myfptree {
 		
 	}
 	//寻找条件模式基，寻找条件模式基后，本例采用排列组合的方法取得频繁模式
-	public static void  findleaf(){
+	public static void  findfrequent(){
 		
 		Iterator<Entry<String,LinkedList<TreeNode>>> iter=maplin.entrySet().iterator();
 		Entry<String,LinkedList<TreeNode>> entry;
 		while(iter.hasNext()){
 			entry=iter.next();
+			ItemMap itmap=new ItemMap();
+			itmap.setKey(entry.getKey());
+			Map map=itmap.getMap();
 			for(TreeNode node:entry.getValue()){
-				
+				itmap.setValue(itmap.getValue()+ node.getCount());
+				findroot(node,map,node.getCount());
 			}
-            
+			conditionMode.add(itmap);
 		}
 		String ss="dd";
 	}
 	//从叶子找到根节点，递归之
-	public static void findroot(TreeNode node){
-		
+	public static void findroot(TreeNode node,Map map,int count){
+		TreeNode father=node.getParent();
+		if(father.getParent()==null)return;
+		if(map.containsKey(father.getName())){
+			Integer sum=(Integer)map.get(father.getName())+count;
+			map.put(father.getName(), sum);
+		}else{
+			map.put(father.getName(), count);
+		}
+		//递归之，直到父节点为空
+		findroot(father,map,count);
 	}
 	
     //构建FP-tree
@@ -108,6 +121,8 @@ public class Myfptree {
 		String str[]=new String[]{"I1","I2","I5"};
 		//构建树
 		buildFPTree();
+		//构建条件模式基，采用排列组合求其频繁项集
+		findfrequent();
 	}
 
 }
