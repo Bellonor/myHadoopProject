@@ -1,9 +1,14 @@
 package mysequence.machineleaning.association.apriori;
 
+import java.util.Map;
+
 public class ItemMap {
 
 	public String key;
 	public Integer value=0;
+	
+	public Map<String,Integer> map;
+	
 	public String getKey() {
 		return key;
 	}
@@ -15,6 +20,12 @@ public class ItemMap {
 	}
 	public void setValue(Integer value) {
 		this.value = value;
+	}
+	public Map<String, Integer> getMap() {
+		return map;
+	}
+	public void setMap(Map<String, Integer> map) {
+		this.map = map;
 	}
 	
 }

@@ -18,7 +18,7 @@ public class Subset {
 	public static List<String> lis=new ArrayList<String>();
 	public static void main(String[] args) {
 		
-		subset();
+		//subset();
 		// TODO Auto-generated method stub
 		String[] str =new String[] { "1", "2", "3", "4"};
 		StringBuilder sb=new StringBuilder();
