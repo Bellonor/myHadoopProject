@@ -34,10 +34,10 @@ public class Myfptree2 {
         return records;
     }
 	//创建表头链
-	public List<TreeNode2> buildHeaderLink(LinkedList<LinkedList<String>> records){
-		List<TreeNode2> header=null;
+	public LinkedList<TreeNode2> buildHeaderLink(LinkedList<LinkedList<String>> records){
+		LinkedList<TreeNode2> header=null;
 		if(records.size()>0){
-			header=new ArrayList<TreeNode2>();
+			header=new LinkedList<TreeNode2>();
 		}else{
 			return null;
 		}
@@ -132,9 +132,9 @@ public class Myfptree2 {
 			   itemsort(items,header);
 			  addNode(root,items,header);
 			}
-			
-		String test="ddd";
-		return null;
+		String dd="dd";	
+		String test=dd;
+		return root;
 	}
 	//当已经有分枝存在的时候，判断新来的节点是否属于该分枝的某个节点，或全部重合，递归
 	public  TreeNode2 addNode(TreeNode2 root,LinkedList<String> items,List<TreeNode2> header){
@@ -143,31 +143,70 @@ public class Myfptree2 {
 		//当前节点的孩子节点不包含该节点，那么另外创建一支分支。
 		TreeNode2 node=root.findChild(item);
 		if(node==null){
-			node=new TreeNode2();
+            node=new TreeNode2();
 			node.setName(item);
 			node.setCount(1);
 			node.setParent(root);
 			root.addChild(node);
+			
+			//加将各个节点加到链头中 
+			for(TreeNode2 head:header){
+				if(head.getName().equals(item)){
+					while(head.getNextHomonym()!=null){
+						head=head.getNextHomonym();
+					}
+					head.setNextHomonym(node);
+					break;
+				}
+			}
+			//加将各个节点加到链头中
 		}else{
 			node.setCount(node.getCount()+1);
 		}
-		//加将各个节点加到结点链中 
-		
-		//加将各个节点加到结点链中 
+ 
 		addNode(node,items,header);
 		return root;
 	}
-	
+	//从叶子找到根节点，递归之
+	public void toroot(TreeNode2 node,LinkedList<String> newrecord){
+		if(node.getParent()==null)return;
+		String name=node.getName();
+		newrecord.add(name);
+		toroot(node.getParent(),newrecord);
+	}
+	//fp-growth
+	public void fpgrowth(LinkedList<LinkedList<String>> records){
+		//保存新的条件模式基的各个记录，以重新构造FP-tree
+		LinkedList<LinkedList<String>> newrecords=new LinkedList<LinkedList<String>>();
+		//构建链头
+		LinkedList<TreeNode2> header=buildHeaderLink(records);
+		//创建FP-Tree
+		TreeNode2 fptree= builderFpTree(records,header);
+		//寻找条件模式基,从链尾开始
+		for(int i=header.size()-1;i>=0;i--){
+			TreeNode2 head=header.get(i);
+			while(head.getNextHomonym()!=null){
+				head=head.getNextHomonym();
+				//叶子count等于多少，就算多少条记录
+				Integer count=head.getCount();
+				for(int n=0;n<count;n++){
+				   LinkedList<String> record=new LinkedList<String>();
+				   toroot(head.getParent(),record);
+				   newrecords.add(record);
+				}
+			}
+		}
+
+		
+	}
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		//读取数据
 		Myfptree2 fpt=new Myfptree2();
 		LinkedList<LinkedList<String>> records=fpt.readF1();
-		//构建链头
+		
 		Myfptree2 fpg=new Myfptree2();
-		List<TreeNode2> header=fpg.buildHeaderLink(records);
-		//创建FP-Tree
-		fpg.builderFpTree(records,header);
+        fpg.fpgrowth(records);
 	}
 
 }
