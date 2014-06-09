@@ -15,6 +15,8 @@ import java.util.Set;
 
 public class Myfptree2 {
 	public static final int  support = 2; // 设定最小支持频次为2 
+	//保存第一次的次序
+	public Map<String,Integer> ordermap=new HashMap<String,Integer>();
 	public LinkedList<LinkedList<String>> readF1() throws IOException {      
 		LinkedList<LinkedList<String>> records=new LinkedList<LinkedList<String>>();
 		//String filePath="scripts/clustering/canopy/canopy.dat";
@@ -69,7 +71,7 @@ public class Myfptree2 {
         String test="ddd";
 		return header;
 	}
-	//选择法排序
+	//选择法排序,如果次数相等，则按名字排序,字典顺序,先小写后大写
 	public List<TreeNode2> sort(List<TreeNode2> list){
 		int len=list.size();
 		for(int i=0;i<len;i++){
@@ -86,12 +88,29 @@ public class Myfptree2 {
 					list.remove(i);
 					list.add(i,tmp);
 				}
+				//如果次数相等，则按名字排序,字典顺序,先小写后大写
+				if(node1.getCount()==node2.getCount()){
+					String name1=node1.getName();
+					String name2=node2.getName();
+					int flag=name1.compareTo(name2);
+					if(flag>0){
+						TreeNode2 tmp=new TreeNode2();
+						tmp=node2;
+						list.remove(j);
+						//list指定位置插入，原来的>=j元素都会往下移，不会删除,所以插入前要删除掉原来的元素
+						list.add(j,node1);
+						list.remove(i);
+						list.add(i,tmp);
+					}
+					
+
+				}
 			}
 		}
 		
 		return list;
 	}
-	//选择法排序，降序,按header给出的顺序
+	//选择法排序，降序,如果同名按L 中的次序排序
 	public   List<String> itemsort(LinkedList<String> lis,List<TreeNode2> header){
 		//List<String> list=new ArrayList<String>();
 		//选择法排序
@@ -108,6 +127,17 @@ public class Myfptree2 {
 					lis.add(j,key1);
 					lis.remove(i);
 					lis.add(i,tmp);
+				}
+				if(value1==value2){
+					int v1=ordermap.get(key1);
+					int v2=ordermap.get(key2);
+					if(v1>v2){
+						String tmp=key2;
+						lis.remove(j);
+						lis.add(j,key1);
+						lis.remove(i);
+						lis.add(i,tmp);
+					}
 				}
 		     }
 		}
@@ -203,13 +233,15 @@ public class Myfptree2 {
 			for(int i=header.size()-1;i>=0;i--){
 				TreeNode2 head=header.get(i);
 				String itemname=head.getName();
+				Integer count=0;
 				while(head.getNextHomonym()!=null){
 					head=head.getNextHomonym();
 					//叶子count等于多少，就算多少条记录
-					Integer count=head.getCount();
-					//打印频繁项集
-					System.out.println(head.getName()+","+item+"\t"+count);
+					count=count+head.getCount();
+					
 				}
+				//打印频繁项集
+				System.out.println(head.getName()+","+item+"\t"+count);
 			}
 		}
 		//寻找条件模式基,从链尾开始
@@ -238,13 +270,24 @@ public class Myfptree2 {
 			fpgrowth(newrecords,itemname);
 		}
     }
+	//保存次序，此步也可以省略，为了减少再加工结果的麻烦而加
+	public void orderF1(LinkedList<TreeNode2> orderheader){
+		for(int i=0;i<orderheader.size();i++){
+			TreeNode2 node=orderheader.get(i);
+			ordermap.put(node.getName(), i);
+		}
+		
+	}
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
+		/*String s1="i1";
+		int flag=s1.compareTo("I1");
+		System.out.println(flag);*/
 		//读取数据
-		Myfptree2 fpt=new Myfptree2();
-		LinkedList<LinkedList<String>> records=fpt.readF1();
-		
 		Myfptree2 fpg=new Myfptree2();
+		LinkedList<LinkedList<String>> records=fpg.readF1();
+		LinkedList<TreeNode2> orderheader=fpg.buildHeaderLink(records);
+		fpg.orderF1(orderheader);
         fpg.fpgrowth(records,null);
 	}
 
