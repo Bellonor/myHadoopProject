@@ -54,8 +54,7 @@ public class Myfptree2 {
 					node.setCount(1);
 					map.put(item, node);
 				}
-
-			}
+             }
 		}
 		 // 把支持度大于（或等于）minSup的项加入到F1中
         Set<String> names = map.keySet();
@@ -127,7 +126,11 @@ public class Myfptree2 {
 	//创建FP-树
 	public TreeNode2 builderFpTree(LinkedList<LinkedList<String>> records,List<TreeNode2> header){
 		
-		  TreeNode2 root=new TreeNode2();
+		   TreeNode2 root;
+		   if(records.size()<=0){
+			   return null;
+		   }
+		   root=new TreeNode2();
 		   for(LinkedList<String> items:records){
 			   itemsort(items,header);
 			  addNode(root,items,header);
@@ -174,17 +177,52 @@ public class Myfptree2 {
 		newrecord.add(name);
 		toroot(node.getParent(),newrecord);
 	}
+	//对条件FP-tree树进行组合，以求出频繁项集
+	public void combineItem(TreeNode2 node,LinkedList<String> newrecord,String Item){
+		if(node.getParent()==null)return;
+		String name=node.getName();
+		newrecord.add(name);
+		toroot(node.getParent(),newrecord);
+	}
 	//fp-growth
-	public void fpgrowth(LinkedList<LinkedList<String>> records){
+	public void fpgrowth(LinkedList<LinkedList<String>> records,String item){
 		//保存新的条件模式基的各个记录，以重新构造FP-tree
 		LinkedList<LinkedList<String>> newrecords=new LinkedList<LinkedList<String>>();
 		//构建链头
 		LinkedList<TreeNode2> header=buildHeaderLink(records);
 		//创建FP-Tree
 		TreeNode2 fptree= builderFpTree(records,header);
+		//结束递归的条件
+		if(header.size()<=0||fptree==null){
+			System.out.println("-----------------");
+			return;
+		}
+		//打印结果,输出频繁项集
+		if(item!=null){
+			//寻找条件模式基,从链尾开始
+			for(int i=header.size()-1;i>=0;i--){
+				TreeNode2 head=header.get(i);
+				String itemname=head.getName();
+				while(head.getNextHomonym()!=null){
+					head=head.getNextHomonym();
+					//叶子count等于多少，就算多少条记录
+					Integer count=head.getCount();
+					//打印频繁项集
+					System.out.println(head.getName()+","+item+"\t"+count);
+				}
+			}
+		}
 		//寻找条件模式基,从链尾开始
 		for(int i=header.size()-1;i>=0;i--){
 			TreeNode2 head=header.get(i);
+			String itemname;
+			//再组合
+			if(item==null){
+				itemname=head.getName();
+			}else{
+				itemname=head.getName()+","+item;
+			}
+			
 			while(head.getNextHomonym()!=null){
 				head=head.getNextHomonym();
 				//叶子count等于多少，就算多少条记录
@@ -195,10 +233,11 @@ public class Myfptree2 {
 				   newrecords.add(record);
 				}
 			}
+			//System.out.println("-----------------");
+			//递归之,以求子FP-Tree
+			fpgrowth(newrecords,itemname);
 		}
-
-		
-	}
+    }
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		//读取数据
@@ -206,7 +245,7 @@ public class Myfptree2 {
 		LinkedList<LinkedList<String>> records=fpt.readF1();
 		
 		Myfptree2 fpg=new Myfptree2();
-        fpg.fpgrowth(records);
+        fpg.fpgrowth(records,null);
 	}
 
 }

@@ -69,6 +69,8 @@ public class FPTree {
         // 如果FP-Tree为空则返回
         if (treeRoot.getChildren()==null || treeRoot.getChildren().size() == 0)
             return;
+        
+        //本人亲自验证，此处输出频繁项集是错误的，与FP-tree子树的链头进行组合，不适合有多个分支的情况下
         //输出项头表的每一项+postPattern
         if(postPattern!=null){
             for (TreeNode header : HeaderTable) {
