@@ -14,13 +14,13 @@ import java.util.Set;
 
 
 public class Myfptree2 {
-	public static final int  support = 2; // 设定最小支持频次为2 
+	public static final int  support = 4; // 设定最小支持频次为2 
 	//保存第一次的次序
 	public Map<String,Integer> ordermap=new HashMap<String,Integer>();
 	public LinkedList<LinkedList<String>> readF1() throws IOException {      
 		LinkedList<LinkedList<String>> records=new LinkedList<LinkedList<String>>();
 		//String filePath="scripts/clustering/canopy/canopy.dat";
-		String filePath="datafile/association/fpg2";
+		String filePath="datafile/association/user2items.csv";
 		BufferedReader br = new BufferedReader(new InputStreamReader(
         new FileInputStream(filePath)));
         for (String line = br.readLine(); line != null; line = br.readLine()) {
@@ -120,7 +120,9 @@ public class Myfptree2 {
 				String key1=lis.get(i);
 				String key2=lis.get(j);
 				Integer value1=findcountByname(key1,header);
+				if(value1==-1)continue;
 				Integer value2=findcountByname(key2,header);
+				if(value2==-1)continue;
 				if(value1<value2){
 					String tmp=key2;
 					lis.remove(j);
