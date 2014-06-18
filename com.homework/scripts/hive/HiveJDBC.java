@@ -28,31 +28,70 @@ public class HiveJDBC {
 
 
 }
-
-
-/*package com.javabloger.hive;
+/*
+import java.sql.SQLException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-public class HiveTestCase {
-    public static void main(String[] args) throws  Exception {
-        Class.forName("org.apache.hadoop.hive.jdbc.HiveDriver");
-        
-        String dropSQL="drop table javabloger";
-        String createSQL="create table javabloger (key int, value string)";
-        String insterSQL="LOAD DATA LOCAL INPATH '/work/hive/examples/files/kv1.txt' OVERWRITE INTO TABLE javabloger";
-        String querySQL="SELECT a.* FROM javabloger a";
-        
-        Connection con = DriverManager.getConnection("jdbc:hive://192.168.20.213:10000/default", "", "");
-        Statement stmt = con.createStatement();
-        stmt.executeQuery(dropSQL);  // 执行删除语句
-        stmt.executeQuery(createSQL);  // 执行建表语句
-        stmt.executeQuery(insterSQL);  // 执行插入语句
-        ResultSet res = stmt.executeQuery(querySQL);   // 执行查询语句
-        
-          while (res.next()) {
-            System.out.println("Result: key:"+res.getString(1) +"  –>  value:" +res.getString(2));
-        }
+import java.sql.DriverManager;
+ 
+public class HiveJdbcClient {
+  private static String driverName = "org.apache.hadoop.hive.jdbc.HiveDriver";
+ 
+  *//**
+ * @param args
+ * @throws SQLException
+   *//*
+  public static void main(String[] args) throws SQLException {
+      try {
+      Class.forName(driverName);
+    } catch (ClassNotFoundException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+      System.exit(1);
     }
+    Connection con = DriverManager.getConnection("jdbc:hive://localhost:10000/default", "", "");
+    Statement stmt = con.createStatement();
+    String tableName = "testHiveDriverTable";
+    stmt.executeQuery("drop table " + tableName);
+    ResultSet res = stmt.executeQuery("create table " + tableName + " (key int, value string)");
+    // show tables
+    String sql = "show tables '" + tableName + "'";
+    System.out.println("Running: " + sql);
+    res = stmt.executeQuery(sql);
+    if (res.next()) {
+      System.out.println(res.getString(1));
+    }
+    // describe table
+    sql = "describe " + tableName;
+    System.out.println("Running: " + sql);
+    res = stmt.executeQuery(sql);
+    while (res.next()) {
+      System.out.println(res.getString(1) + "\t" + res.getString(2));
+    }
+ 
+    // load data into table
+    // NOTE: filepath has to be local to the hive server
+    // NOTE: /tmp/a.txt is a ctrl-A separated file with two fields per line
+    String filepath = "/tmp/a.txt";
+    sql = "load data local inpath '" + filepath + "' into table " + tableName;
+    System.out.println("Running: " + sql);
+    res = stmt.executeQuery(sql);
+ 
+    // select * query
+    sql = "select * from " + tableName;
+    System.out.println("Running: " + sql);
+    res = stmt.executeQuery(sql);
+    while (res.next()) {
+      System.out.println(String.valueOf(res.getInt(1)) + "\t" + res.getString(2));
+    }
+ 
+    // regular hive query
+    sql = "select count(1) from " + tableName;
+    System.out.println("Running: " + sql);
+    res = stmt.executeQuery(sql);
+    while (res.next()) {
+      System.out.println(res.getString(1));
+    }
+  }
 }*/
