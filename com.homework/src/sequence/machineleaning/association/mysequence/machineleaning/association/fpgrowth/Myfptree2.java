@@ -20,7 +20,7 @@ public class Myfptree2 {
 	public LinkedList<LinkedList<String>> readF1() throws IOException {      
 		LinkedList<LinkedList<String>> records=new LinkedList<LinkedList<String>>();
 		//String filePath="scripts/clustering/canopy/canopy.dat";
-		String filePath="datafile/association/fpg2";
+		String filePath="datafile/association/fpg2.csv";
 		BufferedReader br = new BufferedReader(new InputStreamReader(
         new FileInputStream(filePath)));
         for (String line = br.readLine(); line != null; line = br.readLine()) {
@@ -120,7 +120,9 @@ public class Myfptree2 {
 				String key1=lis.get(i);
 				String key2=lis.get(j);
 				Integer value1=findcountByname(key1,header);
+				if(value1==-1)continue;
 				Integer value2=findcountByname(key2,header);
+				if(value2==-1)continue;
 				if(value1<value2){
 					String tmp=key2;
 					lis.remove(j);
@@ -153,7 +155,12 @@ public class Myfptree2 {
 		return count;
 	}
 	
-	//创建FP-树
+	/**
+	 * 
+	 * @param records 构建树的记录,如I1,I2,I3
+	 * @param header 韩书中介绍的表头
+	 * @return 返回构建好的树
+	 */
 	public TreeNode2 builderFpTree(LinkedList<LinkedList<String>> records,List<TreeNode2> header){
 		
 		   TreeNode2 root;
