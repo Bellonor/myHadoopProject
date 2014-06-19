@@ -91,4 +91,29 @@ select sal.id,sal.name,sal.salary,sal.city,a.gender from sal join a on(sal.id=a.
 select sal.id,sal.name,sal.salary,sal.city,a.gender from sal left outer join a on(sal.id=a.id);
 7.创建索引
 create index a_index on table a(id) AS  'org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler' WITH DEFERRED REBUILD ;     
+8.桶
+//临时表
+create table tb_tmp(id int,age int, name string ,timeflag bigint) row format delimited fields terminated by ',';
+//带桶的表
+create table tb_stu(id int,age int, name string,timeflag bigint) clustered by (id) sorted by (age) into 5 buckets row format delimited fields terminated by ',';
+//加载数据到临时表
+load data local inpath '/home/hadoop/in/tb_tmp' overwrite into table tb_tmp;
+//插入到tb_stu表
+insert into table tb_stu select * from tb_tmp;
+//抽样
+select * from tb_stu tablesample(bucket 1 out of 5 on id);
+注：tablesample是抽样语句，语法：TABLESAMPLE(BUCKET x OUT OF y)
+y必须是table总bucket数的倍数或者因子。hive根据y的大小，决定抽样的比例。
+例如，table总共分了64份，当y=32时，抽取(64/32=)2个bucket的数据，当y=128时，抽取(64/128=)1/2个bucket的数据。
+x表示从哪个bucket开始抽取。例如，table总bucket数为32，tablesample(bucket 3 out of 16)，
+表示总共抽取（32/16=）2个bucket的数据，分别为第3个bucket和第（3+16=）19个bucket的数据。
+
+
+
+
+
+
+
+
+
 
