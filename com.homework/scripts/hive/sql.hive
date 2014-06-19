@@ -1,0 +1,94 @@
+1.建表
+CREATE TABLE sal(
+  id INT,
+  name STRING,
+  salary INT
+  )
+partitioned by (city string)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t'
+STORED AS TEXTFILE;
+
+1.1 修改表及属性
+//把id,name以外的列删除
+alter table sal replace columns (id int, name string); 
+//增加列
+alter table sal add columns (remark string);
+//修改column 
+ALTER TABLE table_name   
+      CHANGE  col_old_name col_new_name   
+      column_type;
+      
+ALTER TABLE sal CHANGE remark city string;
+2.导入数据
+load data local inpath '/home/hadoop/in/mytable' overwrite into table sal;
+1	zuansun	3000	none
+2	zuansu2	4000	none
+3	zuansu3	3000	none
+4	zuansu4	4000	none
+5	zuansu5	3000	none
+6	zuansu6	4000	none
+7	zuansu7	3000	none
+8	zuansu8	4000	none
+9	zuansu9	10000	none
+10	zuansu10	20000	none
+11	zuansu11	15000	none
+12	zuansu12	25000	none
+3.嵌套查询
+from (select * from sal) e select e.id,e.name,e.salary  where e.salary>3000;
+//case when
+select id,name,
+ case 
+    when salary<10000 then '屌丝' 
+    when salary>=10000 and salary<20000 then '中下等' 
+    when salary>=20000 and salary<50000 then '高帅富'
+    else '外星人' 
+  end as salarylevel 
+from sal;
+4.group by 
+select remark,sum(salary) from sal group by remark;
+5.动态分区 
+5.1 创建临时表
+CREATE TABLE sal_tmp(
+  id INT,
+  name STRING,
+  salary INT,
+  city string
+  )
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t'
+STORED AS TEXTFILE;
+5.2将数据导入到临时表中
+load data local inpath '/home/hadoop/in/mytable' overwrite into table sal_tmp;
+5.3 操作的配置
+set hive.exec.dynamic.partition=true; // 允许动态分区
+set hive.exec.dynamic.partition.mode=nonstrict;  
+set hive.exec.dynamic.partitions.pernode=50000;  
+set hive.exec.dynamic.partitions.partitions=50000;  
+set hive.exec.max.created.files=500000;  
+set mapred.reduce.tasks =20000; //每个任务默认的reduce数目 
+set hive.merge.mapfiles=true;  //在Map-only的任务结束时合并小文件
+
+附partition相关参数：
+hive.exec.dynamic.partition（缺省false）： 设置为true允许使用dynamic partition
+hive.exec.dynamic.partition.mode（缺省strick）：设置dynamic partition模式（nostrict允许所有partition列都为dynamic partition，strict不允许）
+hive.exec.max.dynamic.partitions.pernode （缺省100）：每一个mapreduce job允许创建的分区的最大数量，如果超过了这个数量就会报错
+hive.exec.max.dynamic.partitions （缺省1000）：一个dml语句允许创建的所有分区的最大数量
+hive.exec.max.created.files （缺省100000）：所有的mapreduce job允许创建的文件的最大数量
+
+
+5.4
+insert into table sal partition (city) select * from sal_tmp;
+6. join操作
+//建表
+create table a(id int,gender string)
+row format delimited fields terminated by '\t' stored as textfile;
+//加载数据
+load data local inpath '/home/hadoop/in/a' overwrite into table a;
+//内连接查询
+select sal.id,sal.name,sal.salary,sal.city,a.gender from sal join a on(sal.id=a.id);
+//左外连接查询
+select sal.id,sal.name,sal.salary,sal.city,a.gender from sal left outer join a on(sal.id=a.id);
+7.创建索引
+create index a_index on table a(id) AS  'org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler' WITH DEFERRED REBUILD ;     
+
