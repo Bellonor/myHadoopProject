@@ -10,11 +10,11 @@ FIELDS TERMINATED BY '\t'
 STORED AS TEXTFILE;
 
 1.1 修改表及属性
-//把id,name以外的列删除
+#把id,name以外的列删除
 alter table sal replace columns (id int, name string); 
-//增加列
+#增加列
 alter table sal add columns (remark string);
-//修改column 
+#修改column 
 ALTER TABLE table_name   
       CHANGE  col_old_name col_new_name   
       column_type;
@@ -36,7 +36,7 @@ load data local inpath '/home/hadoop/in/mytable' overwrite into table sal;
 12	zuansu12	25000	none
 3.嵌套查询
 from (select * from sal) e select e.id,e.name,e.salary  where e.salary>3000;
-//case when
+#case when
 select id,name,
  case 
     when salary<10000 then '屌丝' 
@@ -80,23 +80,23 @@ hive.exec.max.created.files （缺省100000）：所有的mapreduce job允许创
 5.4
 insert into table sal partition (city) select * from sal_tmp;
 6. join操作
-//建表
+#建表
 create table a(id int,gender string)
 row format delimited fields terminated by '\t' stored as textfile;
-//加载数据
+#加载数据
 load data local inpath '/home/hadoop/in/a' overwrite into table a;
-//内连接查询
+#内连接查询
 select sal.id,sal.name,sal.salary,sal.city,a.gender from sal join a on(sal.id=a.id);
-//左外连接查询
+#左外连接查询
 select sal.id,sal.name,sal.salary,sal.city,a.gender from sal left outer join a on(sal.id=a.id);
 7.创建索引
 create index a_index on table a(id) AS  'org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler' WITH DEFERRED REBUILD ;     
 8.桶
-//临时表
+#临时表
 create table tb_tmp(id int,age int, name string ,timeflag bigint) row format delimited fields terminated by ',';
-//带桶的表,4个桶
+#带桶的表,4个桶
 create table tb_stu(id int,age int, name string,timeflag bigint) clustered by (id) sorted by (age) into 4 buckets row format delimited fields terminated by ',';
-//加载数据到临时表
+#加载数据到临时表
 load data local inpath '/home/hadoop/in/tb_tmp' overwrite into table tb_tmp;
 
 1,20,zxm,20140330
@@ -115,18 +115,121 @@ load data local inpath '/home/hadoop/in/tb_tmp' overwrite into table tb_tmp;
 14,19,cvb,20140330
 15,18,e33,20140330
 16,22,nid,20140330
-//设置执行桶的属性
+#设置执行桶的属性
 set hive.enforce.bucketing = true;
-//插入到tb_stu表
+#插入到tb_stu表
 insert into table tb_stu select * from tb_tmp;
-//抽样
+#抽样
 select * from tb_stu tablesample(bucket 1 out of 4 on id);
 注：tablesample是抽样语句，语法：TABLESAMPLE(BUCKET x OUT OF y),相当于以下语句：
 SELECT * FROM numbersflat WHERE number % y = x-1;
+9.RCfile
+#rcfile 格式表
+create table tb_rc(id int,age int, name string ,timeflag bigint) row format delimited fields terminated by ',' stored as rcfile;
+#插入数据,上表中已经有tb_tmp表，所以直接插入数据即可
+insert into table tb_rc select * from tb_tmp;
 
+10.分隔符的多样化（配合正则表达式使用）
+hadoop fs -cat /tmp/liuxiaowen/1.txt
+ 
+000377201207221125^^APPLE IPHONE 4S^^2
+132288201210331629^^THINKING IN JAVA^^1
+132288201210331629^^THIN ssss^^1111
+132288201210331629^^THdd dd ddJAVA^^10
 
+add jar /opt/app/hive-0.7.0-rc1/lib/hive-contrib-0.7.0.jar ;  
+  
+create external table tt(times string,  
+product_name string,  
+sale_num string  
+) ROW FORMAT  
+SERDE 'org.apache.hadoop.hive.contrib.serde2.RegexSerDe'  
+WITH SERDEPROPERTIES  
+( 'input.regex' = '([^^]*)\\^\\^([^^]*)\\^\\^([^^]*)',  
+'output.format.string' = '%1$s %2$s %3$s')  
+STORED AS TEXTFILE;
 
+load data local inpath '/home/hadoop/in/tt' overwrite into table tt;
 
+hive> select product_name from tt;  
+  
+APPLE IPHONE 4S  
+THINKING IN JAVA  
+THIN ssss  
+THdd dd ddJAVA 
+
+11.更加复杂的数据类型 
+11.1-array
+cat login_array.txt                                                                                                                    
+192.168.1.1,3105007010|3105007011|3105007012
+192.168.1.2,3105007020|3105007021|3105007022
+
+CREATE TABLE login_array (
+  ip  STRING,
+  uid  array<BIGINT>
+)
+PARTITIONED BY (dt STRING)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+COLLECTION ITEMS TERMINATED BY '|'
+STORED AS TEXTFILE;
+加载数据到hive表
+LOAD DATA LOCAL INPATH '/home/hadoop/in/login_array' OVERWRITE INTO TABLE login_array PARTITION (dt='20130101'); 
+#查看数据
+select * from login_array;
+192.168.1.1	[3105007010,3105007011,3105007012]	20130101
+192.168.1.2	[3105007020,3105007021,3105007022]	20130101
+select ip,uid[0] from login_array where dt='20130101'; --使用下标访问数组
+192.168.1.1	3105007010
+192.168.1.2	3105007020
+select ip,size(uid) from login_array where dt='20130101'; #查看数组长度
+192.168.1.1	3
+192.168.1.2	3
+select * from login_array where  array_contains(uid,3105007010);#数组查找
+192.168.1.1	[3105007010,3105007011,3105007012]	20130101
+11.2 使用Map
+cat map_test_raw:
+2014-03-03 12:22:34#127.0.0.1#get#amap#src=123&code=456&cookie=789#status=success&time=2s
+2014-03-03 11:22:34#127.0.0.1#get#autonavi#src=123&code=456#status=success&time=2s&cookie=789
+#创建表
+create external  table map_test_raw(ts String,ip String,type String,logtype String,request Map<String,String>,response Map<String,String>)
+  ROW FORMAT DELIMITED FIELDS TERMINATED BY '#'
+  COLLECTION ITEMS TERMINATED BY '&' 
+  MAP KEYS TERMINATED BY '=' 
+  stored as textfile;
+LOAD DATA LOCAL INPATH '/home/hadoop/in/map_test_raw' OVERWRITE INTO TABLE map_test_raw;
+#查看数据
+select * from map_test_raw;
+2014-03-03 12:22:34	127.0.0.1	get	amap	{"src":"123","code":"456","cookie":"789"}	{"status":"success","time":"2s"}
+2014-03-03 11:22:34	127.0.0.1	get	autonavi	{"src":"123","code":"456"}	{"status":"success","time":"2s","cookie":"789"}
+11.3 使用struct
+# cat login_struct.txt
+192.168.1.1,zhangsan:40
+192.168.1.1,lisi:41
+192.168.1.1,gavin:42
+192.168.1.1,wangwu:43
+192.168.1.1,xiaoming:44
+192.168.1.1,xiaojun:45
+# 建表
+CREATE TABLE login_struct (
+  ip  STRING,
+  user  struct<name:string,age:int>
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+COLLECTION ITEMS TERMINATED BY ':'
+STORED AS TEXTFILE;
+#导入数据
+LOAD DATA LOCAL INPATH '/home/hadoop/in/login_struct' OVERWRITE INTO TABLE login_struct; 
+#查看数据
+select ip,user from login_struct;
+
+192.168.1.1	{"name":"zhangsan","age":40}
+192.168.1.1	{"name":"lisi","age":41}
+192.168.1.1	{"name":"gavin","age":42}
+192.168.1.1	{"name":"wangwu","age":43}
+192.168.1.1	{"name":"xiaoming","age":44}
+192.168.1.1	{"name":"xiaojun","age":45}
 
 
 
