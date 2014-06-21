@@ -20,7 +20,7 @@ public class Myfptree2 {
 	public LinkedList<LinkedList<String>> readF1() throws IOException {      
 		LinkedList<LinkedList<String>> records=new LinkedList<LinkedList<String>>();
 		//String filePath="scripts/clustering/canopy/canopy.dat";
-		String filePath="datafile/association/fpg2.csv";
+		String filePath="datafile/association/fpg2";
 		BufferedReader br = new BufferedReader(new InputStreamReader(
         new FileInputStream(filePath)));
         for (String line = br.readLine(); line != null; line = br.readLine()) {

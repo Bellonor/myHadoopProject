@@ -56,5 +56,18 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+<!--最终的决策树保存在了XML中，使用了Dom4J，注意如果要让Dom4J支持按XPath选择节点，还得引入包jaxen.jar-->
+<!--决策树引入的第三方包，主要操作XML文件用到 -->  
+    <dependency>
+    	<groupId>dom4j</groupId>
+    	<artifactId>dom4j</artifactId>
+    	<version>1.6.1</version>
+    </dependency>
+    <dependency>
+	    <groupId>jaxen</groupId>
+	    <artifactId>jaxen</artifactId>
+	    <version>1.1.6</version>
+   </dependency>
+<!--决策树引入的第三方包，主要操作XML文件用到 -->  
   </dependencies>
 </project>
