@@ -134,7 +134,7 @@ public class OtherID3 {
         return true;
     }
  
-    // 给定原始数据的子集(subset中存储行号),当以第index个属性为节点时计算它的信息熵
+    // 给定原始数据的子集(subset中存储行号),当以第index个属性为节点时计算它的信息增益
     public double calNodeEntropy(ArrayList<Integer> subset, int index) {
         int sum = subset.size();
         double entropy = 0.0;
