@@ -11,7 +11,17 @@ public class TreeNode {
 	//可信度
 	private Double percent;
 	
-    public String getName() {
+	//属性数组
+	private ArrayList<String> liatts;
+	
+   
+	public ArrayList<String> getLiatts() {
+		return liatts;
+	}
+	public void setLiatts(ArrayList<String> liatts) {
+		this.liatts = liatts;
+	}
+	public String getName() {
 		return name;
 	}
 	public void setName(String name) {

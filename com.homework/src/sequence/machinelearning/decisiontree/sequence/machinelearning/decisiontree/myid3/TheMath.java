@@ -27,22 +27,22 @@ public class TheMath {
 	 * @param 此公式完全参照  《机器学习(Tom.Mitchell著)》3.4节
 	 * @param entropyS S的信息熵
 	 * @param S 传入的总数
-	 * @param sv sv.key 是sv的个数,sv.value是entropy(sv)
+	 * @param lasv有两个参数， sv 是sv的个数,sv.entropysv是entropy(sv)
 	 * @return 返回信息增益
 	 */
-	public static Double getGain(Double entropyS,int S,Map<Double,Double> sv){
+	
+	public static Double getGain(Double entropyS,int S,List<Point> lasv){
 		Double gain=new Double(0.0);
 		Double enSum=new Double(0.0);
 		Map.Entry<Double, Double>entry;
-		Iterator<Entry<Double,Double>> iter=sv.entrySet().iterator();
-		while(iter.hasNext()){
-			entry=iter.next();
-			enSum=enSum+((entry.getKey()/Double.valueOf(S))*entry.getValue());
+		for(int i=0;i<lasv.size();i++){
+			Point p=lasv.get(i);
+			enSum=enSum+((p.getSv()/Double.valueOf(S))*p.getEntropySv());
 		}
+		
 		gain=entropyS-enSum;
 		return gain;
 	}
-	
 	//公式 -pi*log2(x)
 	public static Double sigma(Double x, Double total)
 	{

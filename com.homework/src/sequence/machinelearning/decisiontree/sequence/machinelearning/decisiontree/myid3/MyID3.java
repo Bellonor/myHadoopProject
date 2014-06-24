@@ -26,16 +26,13 @@ public class MyID3 {
 	public static TreeNode root;
 	
 
-    public void createDTree(){
-    	root=new TreeNode();
-    	
-    }
+
     /**
      * 
      * @param lines 传入要分析的数据集
      * @param index 哪个属性？attribute的index
      */
-    public Double fisrtGain(LinkedList<String[]> lines,int index){
+    public Double getGain(LinkedList<String[]> lines,int index){
     	Double gain=-1.0;
     	List<Double> li=new ArrayList<Double>();
     	//统计Yes No的次数
@@ -81,21 +78,114 @@ public class MyID3 {
         	p.setEntropySv(entropySv);
         	lasv.add(p);
     	}
-    	//gain=TheMath.getGain(entropyS,lines.size(),lasv);
+    	gain=TheMath.getGain(entropyS,lines.size(),lasv);
     	return gain;
     }
-    public void insertNode(){
-    	
+    //寻找最大的信息增益,将最大的属性定为当前节点，并返回该属性所在list的位置和gain值
+    public Maxgain getMaxGain(LinkedList<String[]> lines){
+    	if(lines==null||lines.size()<=0){
+    		return null;
+    	}
+    	Maxgain maxgain = new Maxgain();
+    	Double maxvalue=0.0;
+    	int maxindex=-1;
+    	for(int i=0;i<attribute.size();i++){
+    		Double tmp=getGain(lines,i);
+    		if(maxvalue< tmp){
+    			maxvalue=tmp;
+    			maxindex=i;
+    		}
+    	}
+    	maxgain.setMaxgain(maxvalue);
+    	maxgain.setMaxindex(maxindex);
+    	return maxgain;
     }
-    public void getMaxGain(){
+    //剪取数组
+    public LinkedList<String[]>  filterLines(LinkedList<String[]> lines, String attvalue, int index){
+    	LinkedList<String[]> newlines=new LinkedList<String[]>();
+    	for(int i=0;i<lines.size();i++){
+    		String[] line=lines.get(i);
+    		if(line[index].equals(attvalue)){
+    			newlines.add(line);
+    		}
+    	}
     	
+    	return newlines;
     }
-    
+    public void createDTree(){
+    	root=new TreeNode();
+    	Maxgain maxgain=getMaxGain(data);
+    	if(maxgain==null){
+    		System.out.println("没有数据集，请检查!");
+    	}
+    	int maxKey=maxgain.getMaxindex();
+    	String nodename=attribute.get(maxKey);
+    	root.setName(nodename);
+    	root.setLiatts(attributevalue.get(maxKey));
+    	insertNode(data,root,maxKey);
+    }
+    /**
+     * 
+     * @param lines 传入的数据集，作为新的递归数据集
+     * @param node 深入此节点
+     * @param index 属性位置
+     */
+    public void insertNode(LinkedList<String[]> lines,TreeNode node,int index){
+    	List<String> liatts=node.getLiatts();
+    	for(int i=0;i<liatts.size();i++){
+    		String attname=liatts.get(i);
+    		LinkedList<String[]> newlines=filterLines(lines,attname,index);
+    		if(newlines.size()<=0){
+    	    	System.out.println("出现异常，循环结束");
+    	    	return;
+    	    }
+    		Maxgain maxgain=getMaxGain(newlines);
+    		double gain=maxgain.getMaxgain();
+    		Integer maxKey=maxgain.getMaxindex();
+    		//不等于0继续递归，等于0说明是叶子节点，结束递归。
+    		if(gain!=0){
+    			TreeNode subnode=new TreeNode();
+    			subnode.setParent(node);
+    			subnode.setFatherAttribute(attname);
+    			String nodename=attribute.get(maxKey);
+    			subnode.setName(nodename);
+    			subnode.setLiatts(attributevalue.get(maxKey));
+    			node.addChild(subnode);
+    			//不等于0，继续递归
+    			insertNode(newlines,subnode,maxKey);
+    		}else{
+    			TreeNode subnode=new TreeNode();
+    			subnode.setParent(node);
+    			subnode.setFatherAttribute(attname);
+    			//叶子节点是yes还是no?取新行中最后一个必是其名称,因为只有完全是yes,或完全是no的情况下才会是叶子节点
+    			String[] line=newlines.get(0);
+    			String nodename=line[line.length-1];
+    			subnode.setName(nodename);
+    			node.addChild(subnode);
+    		}
+    	}
+    }
+	//输出决策树
+	public void printDTree(TreeNode node)
+	{
+		if(node.getChildren()==null){
+			System.out.println("--"+node.getName());
+			return;
+		}
+		System.out.println(node.getName());
+		List<TreeNode> childs = node.getChildren();
+		for (int i = 0; i < childs.size(); i++)
+		{
+			System.out.println(childs.get(i).getFatherAttribute());
+			printDTree(childs.get(i));
+		}
+	}
     public static void main(String[] args) {
 		// TODO Auto-generated method stub
     	MyID3 myid3 = new MyID3();
     	myid3.readARFF(new File("datafile/decisiontree/test/in/weather.nominal.arff"));
-    	myid3.fisrtGain(data,0);
+    	myid3.createDTree();
+    	myid3.printDTree(root);
 	}
     //读取arff文件，给attribute、attributevalue、data赋值
     public void readARFF(File file) {
@@ -136,6 +226,5 @@ public class MyID3 {
             e1.printStackTrace();
         }
     }
-	
-
 }
+
