@@ -24,6 +24,7 @@
 	<classpathentry kind="src" path="src/sequence/machinelearning/association"/>
 	<classpathentry kind="src" path="src/hadoop/machinelearning/clustering"/>
 	<classpathentry kind="src" path="src/sequence/machinelearning/decisiontree"/>
+	<classpathentry kind="src" path="src/sequence/machinelearning/naivebayes"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
