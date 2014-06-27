@@ -1,14 +1,10 @@
-
 #存放做决策的属性，一般是或否
 @decision
 yes,no
-
 @attribute outlook {sunny, overcast, rainy}
 @attribute temperature {hot, mild, cool}
 @attribute humidity {high, normal}
 @attribute windy {TRUE, FALSE}
-
- 
 @data
 sunny,hot,high,FALSE,no
 sunny,hot,high,TRUE,no

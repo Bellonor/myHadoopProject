@@ -21,9 +21,9 @@ import java.util.LinkedList;
  */
 public class Train {
 
-    private static LinkedList<String> lisatt = new LinkedList<String>(); // 存储属性的名称:outlook,temperature,humidity,windy
-    private static LinkedList<ArrayList<String>> lisvals = new LinkedList<ArrayList<String>>(); //outlook:sunny,overcast,rainy 存储每个属性的取值,属性的特征
-    private static LinkedList<String[]> listdata = new LinkedList<String[]>();; // 原始数据
+    public static LinkedList<String> lisatt = new LinkedList<String>(); // 存储属性的名称:outlook,temperature,humidity,windy
+    public static LinkedList<ArrayList<String>> lisvals = new LinkedList<ArrayList<String>>(); //outlook:sunny,overcast,rainy 存储每个属性的取值,属性的特征
+    public static LinkedList<String[]> listdata = new LinkedList<String[]>();; // 原始数据
    
     public static final String patternString = "@attribute(.*)[{](.*?)[}]";
     //存储分类，比如，是，否。再比如：检测SNS社区中不真实账号，是真实用户还是僵尸用户
@@ -31,12 +31,12 @@ public class Train {
 	
     //计算P(F1|C)P(F2|C)...P(Fn|C)P(C)，并保存为文本文件 
     /**
-     * 
+     * 为了避免零频问题，对每个计数加1，只要数量足够大，加1是可以忽略的
      * @throws IOException
      */
     public void CountProbility() throws IOException{
     	
-        String src="datafile/naivebayes/train/out/result.arff";
+        String src="datafile/naivebayes/train/out/trainresult.arff";
         delfile(src);
         File file=new File(src);
         if(file.exists())
@@ -46,8 +46,8 @@ public class Train {
     	//先计算判定结果的概率，保存为文件
     	for(int i=0;i<sort.size();i++){
             //第一个for对取出sort,第二个for对data中的sort进行计数
-    		
-    		Integer sum=0;
+    		//避免零频问题，对各项计数加1
+    		Integer sum=1;
             String sortname=sort.get(i);
             Double probability=0.0;
             
@@ -81,7 +81,8 @@ public class Train {
         		String attval=lisval.get(j);
         		//先取出sort(yes 还是no情况)
         		for(int n=0;n<sort.size();n++){
-            		Integer sum=0;
+        			//避免零频问题，对各项计数加1
+        			Integer sum=1;
                     String sortname=sort.get(n);
                     Double probability=0.0;
                     
@@ -98,7 +99,6 @@ public class Train {
             		StringBuffer sb=new StringBuffer();
                     sb.append("P("+attname+"="+attval+"|"+sortname+"),"+probability+"\n");//如果不加"/n"则不能实现换行。
                     System.out.print(sb.toString());
-                    
                     out.write(sb.toString().getBytes("utf-8"));
         		}
         		

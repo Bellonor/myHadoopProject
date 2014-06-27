@@ -1,0 +1,11 @@
+@decision
+yes,no
+@attribute outlook {sunny, overcast, rainy}
+@attribute temperature {hot, mild, cool}
+@attribute humidity {high, normal}
+@attribute windy {TRUE, FALSE}
+@data
+sunny,hot,high,FALSE
+overcast,mild,high,TRUE
+overcast,hot,normal,FALSE
+rainy,mild,high,TRUE
