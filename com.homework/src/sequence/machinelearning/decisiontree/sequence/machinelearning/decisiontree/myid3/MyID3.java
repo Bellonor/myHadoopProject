@@ -183,7 +183,7 @@ public class MyID3 {
     public static void main(String[] args) {
 		// TODO Auto-generated method stub
     	MyID3 myid3 = new MyID3();
-    	myid3.readARFF(new File("datafile/decisiontree/test/in/weather.nominal.arff"));
+    	myid3.readARFF(new File("datafile/decisiontree/train/in/weather.nominal.arff"));
     	myid3.createDTree();
     	myid3.printDTree(root);
 	}

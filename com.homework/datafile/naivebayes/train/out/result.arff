@@ -1,0 +1,23 @@
+@decision P(yes) {0.6428571428571429}
+@decision P(no) {0.35714285714285715}
+@data
+P(outlook=sunny|yes),0.2222222222222222
+P(outlook=sunny|no),0.6
+P(outlook=overcast|yes),0.4444444444444444
+P(outlook=overcast|no),0.0
+P(outlook=rainy|yes),0.3333333333333333
+P(outlook=rainy|no),0.4
+P(temperature=hot|yes),0.2222222222222222
+P(temperature=hot|no),0.4
+P(temperature=mild|yes),0.4444444444444444
+P(temperature=mild|no),0.4
+P(temperature=cool|yes),0.3333333333333333
+P(temperature=cool|no),0.2
+P(humidity=high|yes),0.3333333333333333
+P(humidity=high|no),0.8
+P(humidity=normal|yes),0.6666666666666666
+P(humidity=normal|no),0.2
+P(windy=TRUE|yes),0.3333333333333333
+P(windy=TRUE|no),0.6
+P(windy=FALSE|yes),0.6666666666666666
+P(windy=FALSE|no),0.4

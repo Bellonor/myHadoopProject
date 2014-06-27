@@ -42,7 +42,7 @@ public class Main {
    
    public void stringBufferDemo() throws IOException
    {
-       String src="D:/test.txt";
+       String src="datafile/naivebayes/train/out/result.arff";
        delfile(src);
        File file=new File(src);
        if(file.exists())
@@ -70,7 +70,7 @@ public class Main {
 	public void readF1() throws IOException {      
 		
 		//String filePath="scripts/clustering/canopy/canopy.dat";
-		String filePath="D:/test.txt";
+		String filePath="datafile/naivebayes/train/out/result";
 		BufferedReader br = new BufferedReader(new InputStreamReader(
        new FileInputStream(filePath)));
        for (String line = br.readLine(); line != null; line = br.readLine()) {
