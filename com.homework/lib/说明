@@ -1,0 +1,4 @@
+paoding-analysis.jar只支持lucene-core-3.1.0.jar
+je-analysis-1.5.1.jar不支持lucene3.0以上的，所以
+用paoding只能先lucene3.1
+用je只能选lucene2.3
